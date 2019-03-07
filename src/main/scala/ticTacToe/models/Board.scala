@@ -1,5 +1,10 @@
 package ticTacToe.models
 
+import scala.concurrent.Await._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
+
 class Board(rows: List[List[Int]] = List(
   List(-1, -1, -1),
   List(-1, -1, -1),
@@ -81,14 +86,14 @@ class Board(rows: List[List[Int]] = List(
 
   def isTicTacToe: Boolean = {
 
-    def isTicTacToe(player: Int): Boolean = {
+    def isTicTacToe(player: Int): Future [Boolean] = Future {
 
       def equals(strings: List[String]): Boolean =
         strings match {
           case Nil => true
           case _ :: Nil => true
-          case first :: second :: tail if (first == second && first != "")
-              => equals(second :: tail)
+          case first :: second :: tail if first == second && first != ""
+          => equals(second :: tail)
           case _ :: _ => false
         }
 
@@ -104,7 +109,15 @@ class Board(rows: List[List[Int]] = List(
       coordinates.length == 3 && equals(getDirections(coordinates))
     }
 
-    isTicTacToe(0) || isTicTacToe(1)
+    val futPlayer0 = isTicTacToe(0)
+    val futPlayer1 = isTicTacToe(1)
+
+    val isTicTacToeResult: Future[Boolean] = for {
+      resPlayer0 <- futPlayer0
+      resPlayer1 <- futPlayer1
+    } yield resPlayer0.booleanValue() || resPlayer1.booleanValue()
+
+    result(isTicTacToeResult, atMost = 1 second)
   }
 
   override def equals(that: Any): Boolean =
