@@ -1,7 +1,7 @@
 package ticTacToe
 
 import ticTacToe.models.{Game, playerActor}
-import ticTacToe.views.{DemoOrManualView, GestorIO, MainView}
+import ticTacToe.views.{DemoOrManualView, GestorIO}
 import akka.actor._
 
 case class PlayMessage(game: Game)
@@ -13,10 +13,8 @@ object Main {
 
   def main(args: Array[String]): Unit = {
 
-//    MainView.startGame
-
     val gameMode = DemoOrManualView.askMode
-    GestorIO.write(s"Modo de juego: ${gameMode}\n")
+    GestorIO.write(s"Modo de juego: $gameMode\n")
     
     val system = ActorSystem("PlayerCoordinator")
     val player1 = system.actorOf(Props (new playerActor(null)), name = "p1")
