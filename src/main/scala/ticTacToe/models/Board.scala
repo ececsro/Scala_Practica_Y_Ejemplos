@@ -86,7 +86,8 @@ class Board(rows: List[List[Int]] = List(
 
   def isTicTacToe: Boolean = {
 
-    def isTicTacToe(player: Int): Future [Boolean] = Future {
+//    def isTicTacToe(player: Int): Future [Boolean] = Future {
+    def isTicTacToe(player: Int): Boolean = {
 
       def equals(strings: List[String]): Boolean =
         strings match {
@@ -109,15 +110,16 @@ class Board(rows: List[List[Int]] = List(
       coordinates.length == 3 && equals(getDirections(coordinates))
     }
 
-    val futPlayer0 = isTicTacToe(0)
-    val futPlayer1 = isTicTacToe(1)
+    isTicTacToe(0) || isTicTacToe(1)
+//    val futPlayer0 = isTicTacToe(0)
+//    val futPlayer1 = isTicTacToe(1)
 
-    val isTicTacToeResult: Future[Boolean] = for {
-      resPlayer0 <- futPlayer0
-      resPlayer1 <- futPlayer1
-    } yield resPlayer0.booleanValue() || resPlayer1.booleanValue()
+//    val isTicTacToeResult: Future[Boolean] = for {
+//      resPlayer0 <- futPlayer0
+//      resPlayer1 <- futPlayer1
+//    } yield resPlayer0.booleanValue() || resPlayer1.booleanValue()
 
-    result(isTicTacToeResult, atMost = 1 second)
+//    result(isTicTacToeResult, atMost = 1 second)
   }
 
   override def equals(that: Any): Boolean =

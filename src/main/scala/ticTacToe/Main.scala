@@ -1,7 +1,14 @@
 package ticTacToe
 
-import ticTacToe.models.Game
+import ticTacToe.models.{Game, playerActor, playersCoordinator}
 import ticTacToe.views.{CoordinateView, DemoOrManualView, GameView, GestorIO}
+import akka.actor._
+
+case object PingMessage
+case object PongMessage
+case object StartMessage
+case object StopMessage
+case class PlayMessage(game: Game)
 
 object Main {
 
@@ -10,18 +17,15 @@ object Main {
   def main(args: Array[String]): Unit = {
 
     val gameMode = DemoOrManualView.askMode
-    GestorIO.write(s"Modo de juego: $gameMode\n")
+    GestorIO.write(s"Modo de juego: ${gameMode}\n")
+    
+    val system = ActorSystem("PlayerCoordinator")
+    val player1 = system.actorOf(Props[playerActor], name = "p1")
+    val player2 = system.actorOf(Props[playerActor], name = "p2")
+    val coordinator =
+        system.actorOf(Props(new playersCoordinator(game, player1, player2)),
+          name = "coordinator")
 
-    GameView.write(game)
-
-    do {
-      if (!game.isComplete){
-        game = game.put(DemoOrManualView.getCoordinate(gameMode))
-      } else {
-        game = game.move(DemoOrManualView.getCoordinate(gameMode), DemoOrManualView.getCoordinate(gameMode))
-      }
-      GameView.write(game)
-    } while (!game.isTicTacToe)
-    GestorIO.write("... pero has perdido")
+      coordinator ! PlayMessage(game)
   }
 }
