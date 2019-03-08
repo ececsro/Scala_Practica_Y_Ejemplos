@@ -1,5 +1,9 @@
 package ticTacToe.views
 
+trait GestorIO {
+  def readString()
+}
+
 object GestorIO {
 
   def readString(title:String):String = {
