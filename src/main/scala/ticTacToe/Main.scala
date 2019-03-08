@@ -1,13 +1,9 @@
 package ticTacToe
 
 import ticTacToe.models.{Game, playerActor, playersCoordinator}
-import ticTacToe.views.{CoordinateView, DemoOrManualView, GameView, GestorIO}
+import ticTacToe.views.{DemoOrManualView, GestorIO}
 import akka.actor._
 
-case object PingMessage
-case object PongMessage
-case object StartMessage
-case object StopMessage
 case class PlayMessage(game: Game)
 
 object Main {
@@ -23,7 +19,7 @@ object Main {
     val player1 = system.actorOf(Props[playerActor], name = "p1")
     val player2 = system.actorOf(Props[playerActor], name = "p2")
     val coordinator =
-        system.actorOf(Props(new playersCoordinator(game, player1, player2)),
+        system.actorOf(Props(new playersCoordinator(player1, player2)),
           name = "coordinator")
 
       coordinator ! PlayMessage(game)

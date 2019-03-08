@@ -8,10 +8,11 @@ class playerActor() extends Actor {
 
   def receive = {
     case PlayMessage(game) =>
+      val turn = game.getTurn
       if (!game.isComplete){
-        sender ! PlayMessage(game.put(DemoOrManualView.getCoordinate))
+        sender ! PlayMessage(game.put(DemoOrManualView.getCoordinate(turn)))
       } else {
-        sender ! PlayMessage(game.move(DemoOrManualView.getCoordinate, DemoOrManualView.getCoordinate))
+        sender ! PlayMessage(game.move(DemoOrManualView.getCoordinate(turn), DemoOrManualView.getCoordinate(turn)))
       }
   }
 }
